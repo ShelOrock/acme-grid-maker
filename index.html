@@ -2,16 +2,48 @@
     <head>
         <title>Acme Grid Maker</title>
         <link href='styles.css' rel='stylesheet'/>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body>
         <h1>Acme Grid Maker</h1>
         <div id='input-container'>
-            <input type='text' placeholder='8'/>
-            <input type='text' placeholder='8'/>
+            <input type='text' placeholder='8' class='row'/>
+            <input type='text' placeholder='8' class='col'/>
             <button>Make Grid</button>
         </div>
         <div id='grid'> 
 
         </div>
+        <script>
+            const row = document.querySelectorAll('input')[0];
+            const col = document.querySelectorAll('input')[1];
+            const grid = document.querySelector('#grid');
+            const clickGrid = document.querySelector('button');
+
+            const createGrid = (createRow, createCol) => {
+                grid.style.width = `${createRow}rem`;
+                let temp = createCol;
+                for(createRow; createRow > 0; createRow--) {
+                    for(createCol; createCol > 0; createCol--){
+                        const box = document.createElement('div');
+                        box.classList.add('unit');
+                        grid.append(box);
+                    }
+                    createCol = temp;
+                }
+                return grid;
+            }
+
+
+            clickGrid.addEventListener('click', (ev) => {
+                createGrid(row.value, col.value);
+                const clickBox = document.querySelectorAll('.unit');
+                console.log(clickBox);
+            });
+
+
+
+
+        </script>
     </body>
 </html>

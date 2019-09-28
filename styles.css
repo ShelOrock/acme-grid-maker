@@ -19,10 +19,12 @@ input, button{
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    margin: auto;
 }
 
 .unit {
     width: 1rem;
     height: 1rem;
     border: 1px solid black;
+    box-sizing: border-box;
 }
