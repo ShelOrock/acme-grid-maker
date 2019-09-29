@@ -7,43 +7,126 @@
     <body>
         <h1>Acme Grid Maker</h1>
         <div id='input-container'>
-            <input type='text' placeholder='8' class='row'/>
-            <input type='text' placeholder='8' class='col'/>
+            <input type='text' placeholder='rows' value='8' class='row'/>
+            <p class='checkInputRow'>rows must be between 1 and 50</p>
+            <input type='text' placeholder='columns' value='8' class='col'/>
+            <p class='checkInputCol'>columns must be between 1 and 50</p>
             <button>Make Grid</button>
         </div>
         <div id='grid'> 
 
         </div>
+        <div id='coordinates-container'>
+            <p></p>
+        </div>
+
         <script>
-            const row = document.querySelectorAll('input')[0];
-            const col = document.querySelectorAll('input')[1];
+            let coordinateData = [];
             const grid = document.querySelector('#grid');
-            const clickGrid = document.querySelector('button');
+            const btn = document.querySelector('button');
+            const createRow = document.querySelectorAll('input')[0];
+            const createCol = document.querySelectorAll('input')[1];
 
-            const createGrid = (createRow, createCol) => {
-                grid.style.width = `${createRow}rem`;
-                let temp = createCol;
-                for(createRow; createRow > 0; createRow--) {
-                    for(createCol; createCol > 0; createCol--){
-                        const box = document.createElement('div');
-                        box.classList.add('unit');
-                        grid.append(box);
-                    }
-                    createCol = temp;
-                }
-                return grid;
+            createRow.addEventListener('keyup', () => {
+            const checkRow = document.querySelector('.checkInputRow');
+            if(Number(createRow.value) < 1 || Number(createRow.value) > 50) {
+                checkRow.style.display = 'block';
+                btn.disabled = true;
+            } else {
+                checkRow.style.display = 'none';
+                btn.disabled = false;
             }
-
-
-            clickGrid.addEventListener('click', (ev) => {
-                createGrid(row.value, col.value);
-                const clickBox = document.querySelectorAll('.unit');
-                console.log(clickBox);
             });
 
+            createCol.addEventListener('keyup', () => {
+            const checkCol = document.querySelector('.checkInputCol');
+            if(Number(createCol.value) < 1 || Number(createCol.value) > 50) {
+                checkCol.style.display = 'block';
+                btn.disabled = true;
+            } else {
+                checkCol.style.display = 'none';
+                btn.disabled = false;
+            }
+            });
+
+            btn.addEventListener('click', () => {
+                reset();
+                createGrid(Number(createRow.value), Number(createCol.value));
+                renderGrid(coordinateData, grid)
+
+                const clickBox = document.querySelectorAll('.box')
+            clickBox.forEach(box => {
+                box.addEventListener('click', (ev) => {
+                    const rowIdx = ev.target.getAttribute('row-idx');
+                    const colIdx = ev.target.getAttribute('col-idx');
+                    const coordinateDisplay = document.querySelector('#coordinates-container > p')
+
+                    coordinateDisplay.style.display = 'block'
+                    coordinateDisplay.innerHTML = `rIdx: ${rowIdx} cIdx: ${colIdx}`;
 
 
+                    ev.target.classList.toggle('isClicked');
+                });
+            });
+            })
+
+            const createGrid = (row, col) => {
+                grid.style.width = `${row}rem`;
+                    let tempValue = col;
+                    for(row; row > 0; row--) {
+                        for(col; col > 0; col--){
+                            coordinateData.push({rowPos: row, colPos: col})
+                        }
+                        col = tempValue;
+                    }
+                return coordinateData;
+            }
+
+            const renderGrid = (state, container) => {
+                const html = state.map(item => 
+                    `<div row-idx='${Number(createRow.value) - item.rowPos}' col-idx='${Number(createCol.value) - item.colPos}' class='box'></div>`
+                ).join('')
+                container.innerHTML = html;
+            }
+
+            const reset = () => {
+                coordinateData = [];
+            }
+
+            renderGrid(coordinateData, grid);
 
         </script>
     </body>
 </html>
+<!--
+//  const clickGrid = document.querySelector('button');
+// const createGrid = (createRow, createCol) => {
+
+//     const grid = document.querySelector('#grid');
+//     grid.style.width = `${createRow}rem`;
+//     let temp = createCol;
+//     for(createRow; createRow > 0; createRow--) {
+//         for(createCol; createCol > 0; createCol--){
+//             const box = document.createElement('div');
+//             box.classList.add('unit');
+//             grid.append(box);
+//         }
+//         createCol = temp;
+//     }
+//     return grid;
+// }
+
+
+// const row = document.querySelectorAll('input')[0];
+// const col = document.querySelectorAll('input')[1];
+
+// clickGrid.addEventListener('click', () => {
+//     createGrid(row.value, col.value);
+
+// const clickBox = document.querySelectorAll('.unit');
+// clickBox.forEach(box => {
+//     box.addEventListener('click', (ev) => {
+//         ev.target.classList.toggle('unitClicked');
+//     });
+// });
+// });-->
